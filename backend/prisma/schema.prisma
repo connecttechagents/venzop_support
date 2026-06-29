@@ -1,0 +1,54 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Machine {
+  id        String   @id @default(uuid())
+  location  String
+  qrCode    String?
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id           String    @id @default(uuid())
+  mobileNumber String?   @unique
+  role         String    @default("CUSTOMER") // CUSTOMER, AGENT, BOT
+  name         String?
+  tickets      Ticket[]  @relation("CustomerTickets")
+  agentTickets Ticket[]  @relation("AgentTickets")
+  messages     Message[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Ticket {
+  id          String        @id @default(uuid())
+  status      String        @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  machineId   String
+  machine     Machine       @relation(fields: [machineId], references: [id])
+  customerId  String
+  customer    User          @relation("CustomerTickets", fields: [customerId], references: [id])
+  agentId     String?
+  agent       User?         @relation("AgentTickets", fields: [agentId], references: [id])
+  messages    Message[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  text      String
+  imageUrl  String?
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  createdAt DateTime @default(now())
+}
