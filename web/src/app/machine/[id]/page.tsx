@@ -135,6 +135,17 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
         createdAt: serverTimestamp()
       });
 
+      // Notify agents
+      fetch('/api/notifyAgent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `New Ticket #${newTicketNumber}`,
+          body: `${machineName || unwrappedParams.id}: ${issueType} - ${subIssueType}`,
+          url: `https://agent.venzop.com` // Opening the app will redirect to the tickets list
+        })
+      }).catch(console.error);
+
       localStorage.setItem('customerId', finalCustomerId);
       router.push(`/chat/${newTicketRef.id}`);
     } catch (error) {

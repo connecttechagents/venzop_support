@@ -3,7 +3,8 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, 
 import { useRouter } from 'expo-router';
 import { Audio } from 'expo-av';
 import { db } from '../lib/firebase';
-import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, setDoc } from 'firebase/firestore';
+import { getMessaging, getToken, isSupported } from 'firebase/messaging';
 
 interface Ticket {
   id: string;
@@ -28,6 +29,40 @@ export default function TicketDashboard() {
   const router = useRouter();
 
   const agentId = 'current_agent_id'; // Mock agent ID for now
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+
+  const enableNotifications = async () => {
+    try {
+      const supported = await isSupported();
+      if (!supported) {
+        alert("Push notifications are not supported in this browser.");
+        return;
+      }
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        const messaging = getMessaging();
+        const token = await getToken(messaging, {
+          vapidKey: process.env.EXPO_PUBLIC_VAPID_KEY
+        });
+        if (token) {
+          // Save to firestore
+          await setDoc(doc(db, 'agentFcmTokens', agentId), {
+            token: token,
+            updatedAt: new Date()
+          });
+          setNotificationsEnabled(true);
+          alert('Notifications Enabled successfully!');
+        } else {
+          alert('Failed to get push token.');
+        }
+      } else {
+        alert('Notification permission denied.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Error enabling notifications.');
+    }
+  };
 
   const isInitialLoad = useRef(true);
 
@@ -148,7 +183,14 @@ export default function TicketDashboard() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <Text style={styles.headerTitle}>Venzop Agent</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.headerTitle}>Venzop Agent</Text>
+            {!notificationsEnabled && (
+              <TouchableOpacity onPress={enableNotifications} style={{marginLeft: 12, backgroundColor: '#3b82f6', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
+                <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>Enable Notifications</Text>
+              </TouchableOpacity>
+            )}
+          </View>
           <TouchableOpacity onPress={() => setShowFilters(!showFilters)} style={styles.filterToggle}>
             <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
           </TouchableOpacity>

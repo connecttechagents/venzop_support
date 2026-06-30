@@ -88,6 +88,17 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
         sender: { role: 'CUSTOMER' },
         createdAt: serverTimestamp()
       });
+
+      // Notify agents
+      fetch('/api/notifyAgent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `New Message on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
+          body: messageText.length > 50 ? messageText.substring(0, 50) + '...' : messageText,
+          url: `https://agent.venzop.com`
+        })
+      }).catch(console.error);
     } catch (e) {
       console.error(e);
       alert('Failed to send message.');
@@ -132,6 +143,18 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
           sender: { role: 'CUSTOMER' },
           createdAt: serverTimestamp()
         });
+
+        // Notify agents
+        fetch('/api/notifyAgent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: `New Image on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
+            body: 'Customer uploaded an image',
+            url: `https://agent.venzop.com`
+          })
+        }).catch(console.error);
+
         setIsUploading(false);
         if (fileInputRef.current) fileInputRef.current.value = '';
       }
