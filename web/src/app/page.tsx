@@ -34,7 +34,7 @@ export default function Home() {
               value={machineId}
               onChange={(e) => setMachineId(e.target.value)}
               placeholder="e.g. M-12345"
-              className="flex-1 px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="flex-1 px-4 py-2 rounded-lg border border-slate-300 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               required
             />
             <button
