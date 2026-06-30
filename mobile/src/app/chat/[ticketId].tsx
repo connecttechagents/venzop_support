@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Keyboard
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage } from '../../lib/firebase';
-import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 interface Message {
@@ -18,25 +18,34 @@ interface Message {
   imageUrl?: string;
 }
 
-// Removed hardcoded QUICK_REPLIES, fetching from Firestore instead.
-
 export default function ChatScreen() {
   const { ticketId } = useLocalSearchParams<{ ticketId: string }>();
   const [messages, setMessages] = useState<Message[]>([]);
-  const [ticket, setTicket] = useState<{status?: string, agentId?: string, ticketNumber?: number, issueType?: string}>({});
+  const [ticket, setTicket] = useState<{status?: string, agentId?: string, ticketNumber?: number, issueType?: string, machineId?: string, customerId?: string}>({});
+  const [customerPhone, setCustomerPhone] = useState<string>('');
   const [showStatusPicker, setShowStatusPicker] = useState(false);
   const [newMessage, setNewMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [quickReplies, setQuickReplies] = useState<any[]>([]);
   const router = useRouter();
 
-  // In a real app, this agent ID would be from auth context
   const agentId = 'current_agent_id';
 
   useEffect(() => {
     const ticketRef = doc(db, 'tickets', ticketId);
-    const unsubscribeTicket = onSnapshot(ticketRef, (docSnap) => {
-      if (docSnap.exists()) setTicket(docSnap.data() as any);
+    const unsubscribeTicket = onSnapshot(ticketRef, async (docSnap) => {
+      if (docSnap.exists()) {
+        const tData = docSnap.data() as any;
+        setTicket(tData);
+        if (tData.customerId) {
+          try {
+            const userDoc = await getDoc(doc(db, 'users', tData.customerId));
+            if (userDoc.exists()) {
+              setCustomerPhone(userDoc.data().mobileNumber || '');
+            }
+          } catch (e) { console.error("Error fetching user", e); }
+        }
+      }
     });
 
     const q = query(collection(db, `tickets/${ticketId}/messages`), orderBy('createdAt', 'asc'));
@@ -175,7 +184,10 @@ export default function ChatScreen() {
             <Text style={styles.backButtonText}>← Back</Text>
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
+              {customerPhone ? <Text style={{ fontSize: 13, color: '#3b82f6', fontWeight: 'bold' }}>{customerPhone}</Text> : null}
+            </View>
             <Text style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
               {`${ticket.machineId || ''}-${(ticket as any).machineName || 'Unknown'}-${(ticket as any).location || 'Unknown Location'}`}
             </Text>

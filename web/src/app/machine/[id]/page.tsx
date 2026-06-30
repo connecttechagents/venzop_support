@@ -56,7 +56,8 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
 
         const ticketsRef = collection(db, 'tickets');
         const activeTicketsQuery = query(ticketsRef, 
-          where('customerId', '==', cId)
+          where('customerId', '==', cId),
+          where('machineId', '==', unwrappedParams.id)
         );
         const activeTicketsSnap = await getDocs(activeTicketsQuery);
         
