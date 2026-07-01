@@ -54,10 +54,7 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
 
   useEffect(() => {
     if (messagesEndRef.current) {
-      const parent = messagesEndRef.current.parentElement;
-      if (parent) {
-        parent.scrollTo({ top: parent.scrollHeight, behavior: 'smooth' });
-      }
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, [messages]);
 
@@ -247,7 +244,7 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
         <form onSubmit={handleSendMessage} className="flex gap-2 md:gap-3 max-w-4xl mx-auto items-center w-full">
           <input
             type="file"
-            accept="image/*"
+            accept="image/*, image/jpeg, image/png, image/webp"
             ref={fileInputRef}
             onChange={handleImageUpload}
             className="hidden"
@@ -267,6 +264,12 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && newMessage.trim()) {
+                e.preventDefault();
+                handleSendMessage(e as any);
+              }
+            }}
             placeholder="Type a message..."
             className="flex-1 min-w-0 px-4 md:px-6 py-3 md:py-4 rounded-full border border-white/10 bg-white/5 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-white placeholder-indigo-200/50 backdrop-blur-md text-sm md:text-base"
           />

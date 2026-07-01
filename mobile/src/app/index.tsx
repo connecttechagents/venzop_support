@@ -110,7 +110,17 @@ export default function TicketDashboard() {
             const { sound } = await Audio.Sound.createAsync(
                require('../../assets/beep.wav')
             );
+            await sound.setVolumeAsync(1.0);
             await sound.playAsync();
+            
+            // Double beep for attention
+            setTimeout(async () => {
+              try {
+                await sound.replayAsync();
+              } catch (err) {
+                console.error("Error on second beep", err);
+              }
+            }, 600);
           } catch (e) {
             console.error("Error playing sound", e);
           }

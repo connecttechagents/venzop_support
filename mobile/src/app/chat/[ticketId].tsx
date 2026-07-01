@@ -27,6 +27,7 @@ export default function ChatScreen() {
   const [newMessage, setNewMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [quickReplies, setQuickReplies] = useState<any[]>([]);
+  const flatListRef = useRef<FlatList>(null);
   const router = useRouter();
 
   const agentId = 'current_agent_id';
@@ -215,39 +216,52 @@ export default function ChatScreen() {
         )}
 
         <FlatList
+          ref={flatListRef}
           data={messages}
           keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={renderMessage}
           contentContainerStyle={styles.messageList}
+          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
         />
 
         <View style={styles.inputWrapper}>
           {(newMessage.startsWith('/') || newMessage.startsWith('\\')) && (
             <View style={styles.slashCommandDropdown}>
               <ScrollView keyboardShouldPersistTaps="handled">
-                {quickReplies.filter(qr => 
-                  qr.trigger.toLowerCase().includes(newMessage.substring(1).toLowerCase()) ||
-                  qr.category.toLowerCase().includes(newMessage.substring(1).toLowerCase())
-                ).sort((a, b) => {
-                  if (a.category === ticket.issueType && b.category !== ticket.issueType) return -1;
-                  if (b.category === ticket.issueType && a.category !== ticket.issueType) return 1;
-                  return 0;
-                }).map((qr, idx) => (
-                  <TouchableOpacity 
-                    key={idx} 
-                    style={styles.slashCommandItem} 
-                    onPress={() => setNewMessage(qr.text)}
-                  >
-                    <Text style={styles.slashCommandTrigger}>/{qr.trigger} <Text style={styles.slashCommandCategory}>• {qr.category}</Text> {qr.category === ticket.issueType && <Text style={{color: '#22c55e', fontSize: 10}}>★ Match</Text>}</Text>
-                    <Text style={styles.slashCommandPreview} numberOfLines={1}>{qr.text}</Text>
-                  </TouchableOpacity>
-                ))}
-                {quickReplies.filter(qr => 
-                  qr.trigger.toLowerCase().includes(newMessage.substring(1).toLowerCase()) ||
-                  qr.category.toLowerCase().includes(newMessage.substring(1).toLowerCase())
-                ).length === 0 && (
-                  <Text style={styles.noMatchText}>No quick replies match "{newMessage.substring(1)}"</Text>
-                )}
+                {(() => {
+                  const queryText = newMessage.substring(1).toLowerCase();
+                  const matched = quickReplies.filter(qr => {
+                    const matchesQuery = qr.trigger.toLowerCase().includes(queryText) || qr.category.toLowerCase().includes(queryText);
+                    if (!matchesQuery) return false;
+                    
+                    const ticketStatus = ticket.status || 'OPEN';
+                    const ticketIssue = (ticket as any).issueType || 'General';
+                    
+                    const qrStatuses = qr.statuses || ['ALL'];
+                    const qrIssues = qr.issueTypes || ['ALL'];
+                    
+                    const statusMatch = qrStatuses.includes('ALL') || qrStatuses.includes(ticketStatus);
+                    const issueMatch = qrIssues.includes('ALL') || qrIssues.includes(ticketIssue);
+                    
+                    return statusMatch && issueMatch;
+                  });
+                  
+                  if (matched.length === 0) {
+                    return <Text style={styles.noMatchText}>No matching quick replies found</Text>;
+                  }
+
+                  return matched.map((qr, idx) => (
+                    <TouchableOpacity 
+                      key={idx} 
+                      style={styles.slashCommandItem} 
+                      onPress={() => setNewMessage(qr.text)}
+                    >
+                      <Text style={styles.slashCommandTrigger}>/{qr.trigger} <Text style={styles.slashCommandCategory}>• {qr.category}</Text></Text>
+                      <Text style={styles.slashCommandPreview} numberOfLines={1}>{qr.text}</Text>
+                    </TouchableOpacity>
+                  ));
+                })()}
               </ScrollView>
             </View>
           )}
@@ -265,6 +279,8 @@ export default function ChatScreen() {
             onChangeText={setNewMessage}
             placeholder="Type your reply..."
             placeholderTextColor="#94a3b8"
+            onSubmitEditing={handleSend}
+            returnKeyType="send"
           />
           <TouchableOpacity 
             style={[styles.sendButton, !newMessage.trim() && styles.sendButtonDisabled]} 
