@@ -2,8 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Audio } from 'expo-av';
+import { Picker } from '@react-native-picker/picker';
 import { db } from '../lib/firebase';
-import { collection, query, orderBy, onSnapshot, doc, setDoc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore';
 import { getMessaging, getToken, isSupported } from 'firebase/messaging';
 
 interface Ticket {
@@ -18,12 +19,14 @@ interface Ticket {
 
 export default function TicketDashboard() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [machines, setMachines] = useState<{id: string, name: string}[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
   const [statusFilter, setStatusFilter] = useState('All');
   const [issueFilter, setIssueFilter] = useState('All');
   const [assignFilter, setAssignFilter] = useState('All');
+  const [machineFilter, setMachineFilter] = useState('All');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [showFilters, setShowFilters] = useState(false);
   const router = useRouter();
@@ -67,6 +70,18 @@ export default function TicketDashboard() {
   const isInitialLoad = useRef(true);
 
   useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const snap = await getDocs(collection(db, 'machines'));
+        const mList: any[] = [];
+        snap.forEach(doc => mList.push({ id: doc.id, ...doc.data() }));
+        setMachines(mList);
+      } catch (e) {
+        console.error("Error fetching machines", e);
+      }
+    };
+    fetchMachines();
+
     const q = query(collection(db, 'tickets'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       const fetchedTickets: Ticket[] = [];
@@ -117,6 +132,7 @@ export default function TicketDashboard() {
     if (issueFilter !== 'All' && (t as any).issueType !== issueFilter) return false;
     if (assignFilter === 'Me' && (t as any).agentId !== agentId) return false;
     if (assignFilter === 'Unassigned' && (t as any).agentId) return false;
+    if (machineFilter !== 'All' && t.machineId !== machineFilter) return false;
     return true;
   });
 
@@ -197,39 +213,84 @@ export default function TicketDashboard() {
         </View>
 
         {showFilters && (
-          <View style={styles.filtersContainer}>
-            <Text style={styles.filterLabel}>Status:</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
-              {['All', 'OPEN', 'IN_PROGRESS', 'PENDING_CUSTOMER', 'CLOSED'].map(s => (
-                <TouchableOpacity key={s} onPress={() => setStatusFilter(s)} style={[styles.filterChip, statusFilter === s && styles.filterChipActive]}>
-                  <Text style={[styles.filterChipText, statusFilter === s && styles.filterChipTextActive]}>{s}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+          <View style={[styles.filtersContainer, { padding: 10, gap: 10 }]}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+              
+              <View style={{ flex: 1, minWidth: 140 }}>
+                <Text style={styles.filterLabel}>Machine:</Text>
+                <View style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 8, overflow: 'hidden', backgroundColor: '#f8fafc' }}>
+                  <Picker
+                    selectedValue={machineFilter}
+                    onValueChange={(itemValue) => setMachineFilter(itemValue)}
+                    style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
+                  >
+                    <Picker.Item label="All" value="All" />
+                    {machines.map(m => (
+                      <Picker.Item key={m.id} label={`${m.id} - ${m.name || 'Unknown'}`} value={m.id} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
 
-            <Text style={styles.filterLabel}>Issue Type:</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
-              {['All', 'Payment', 'Hardware', 'General'].map(s => (
-                <TouchableOpacity key={s} onPress={() => setIssueFilter(s)} style={[styles.filterChip, issueFilter === s && styles.filterChipActive]}>
-                  <Text style={[styles.filterChipText, issueFilter === s && styles.filterChipTextActive]}>{s}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+              <View style={{ flex: 1, minWidth: 140 }}>
+                <Text style={styles.filterLabel}>Status:</Text>
+                <View style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 8, overflow: 'hidden', backgroundColor: '#f8fafc' }}>
+                  <Picker
+                    selectedValue={statusFilter}
+                    onValueChange={(itemValue) => setStatusFilter(itemValue)}
+                    style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
+                  >
+                    {['All', 'OPEN', 'IN_PROGRESS', 'PENDING_CUSTOMER', 'CLOSED'].map(s => (
+                      <Picker.Item key={s} label={s} value={s} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
 
-            <Text style={styles.filterLabel}>Assignment:</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
-              {['All', 'Me', 'Unassigned'].map(s => (
-                <TouchableOpacity key={s} onPress={() => setAssignFilter(s)} style={[styles.filterChip, assignFilter === s && styles.filterChipActive]}>
-                  <Text style={[styles.filterChipText, assignFilter === s && styles.filterChipTextActive]}>{s}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+              <View style={{ flex: 1, minWidth: 140 }}>
+                <Text style={styles.filterLabel}>Issue Type:</Text>
+                <View style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 8, overflow: 'hidden', backgroundColor: '#f8fafc' }}>
+                  <Picker
+                    selectedValue={issueFilter}
+                    onValueChange={(itemValue) => setIssueFilter(itemValue)}
+                    style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
+                  >
+                    {['All', 'Payment', 'Hardware', 'General'].map(s => (
+                      <Picker.Item key={s} label={s} value={s} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
 
-            <View style={styles.sortContainer}>
-               <Text style={styles.filterLabel}>Sort Order:</Text>
-               <TouchableOpacity onPress={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')} style={styles.sortToggle}>
-                  <Text style={styles.sortToggleText}>{sortOrder === 'desc' ? 'Newest First ↓' : 'Oldest First ↑'}</Text>
-               </TouchableOpacity>
+              <View style={{ flex: 1, minWidth: 140 }}>
+                <Text style={styles.filterLabel}>Assignment:</Text>
+                <View style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 8, overflow: 'hidden', backgroundColor: '#f8fafc' }}>
+                  <Picker
+                    selectedValue={assignFilter}
+                    onValueChange={(itemValue) => setAssignFilter(itemValue)}
+                    style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
+                  >
+                    {['All', 'Me', 'Unassigned'].map(s => (
+                      <Picker.Item key={s} label={s} value={s} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+
+              <View style={{ flex: 1, minWidth: 140 }}>
+                <Text style={styles.filterLabel}>Sort Order:</Text>
+                <View style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 8, overflow: 'hidden', backgroundColor: '#f8fafc' }}>
+                  <Picker
+                    selectedValue={sortOrder}
+                    onValueChange={(itemValue) => setSortOrder(itemValue)}
+                    style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
+                  >
+                    <Picker.Item label="Newest First ↓" value="desc" />
+                    <Picker.Item label="Oldest First ↑" value="asc" />
+                  </Picker>
+                </View>
+              </View>
+
             </View>
           </View>
         )}
