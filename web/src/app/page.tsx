@@ -54,7 +54,7 @@ export default function Home() {
             <select
               value={machineId}
               onChange={(e) => setMachineId(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-lg border border-slate-300 text-slate-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              className="flex-1 min-w-0 px-4 py-2 rounded-lg border border-slate-300 text-slate-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors truncate text-ellipsis overflow-hidden"
               required
             >
               {machines.length === 0 && <option value="">Loading machines...</option>}
