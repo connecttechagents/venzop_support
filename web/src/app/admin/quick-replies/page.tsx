@@ -114,25 +114,35 @@ export default function AdminQuickReplies() {
             <h2 className="text-xl font-semibold text-white mb-4">Add New Reply</h2>
             <form onSubmit={handleAdd} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Trigger (e.g. "hello")</label>
-                <input
-                  type="text"
-                  value={trigger}
-                  onChange={e => setTrigger(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Trigger word"
-                />
+                <label className="block text-sm font-medium text-slate-400 mb-1">Trigger (No spaces, e.g. "hello")</label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 font-bold">/</span>
+                  <input
+                    type="text"
+                    value={trigger}
+                    onChange={e => setTrigger(e.target.value.replace(/\s+/g, '').toLowerCase())}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg pl-8 pr-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="keyword"
+                  />
+                </div>
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">Category (e.g. "Greeting")</label>
-                <input
-                  type="text"
+                <label className="block text-sm font-medium text-slate-400 mb-1">Category</label>
+                <select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                  placeholder="Category"
-                />
+                >
+                  <option value="" disabled>Select a Category...</option>
+                  <option value="Greeting">Greeting</option>
+                  <option value="Clarification">Clarification</option>
+                  <option value="Solution">Solution</option>
+                  <option value="Apology">Apology</option>
+                  <option value="Follow-up">Follow-up</option>
+                  <option value="Closing">Closing</option>
+                  <option value="General">General</option>
+                </select>
               </div>
 
               <div>
