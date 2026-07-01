@@ -189,11 +189,18 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
                 type="tel"
                 id="mobile"
                 required
+                pattern="[0-9]{10}"
+                minLength={10}
+                maxLength={10}
+                title="Please enter a 10 digit mobile number"
                 value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value)}
-                placeholder="e.g. +1234567890"
+                onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ''))}
+                placeholder="e.g. 9876543210"
                 className="w-full px-5 py-4 rounded-xl border border-white/10 bg-white/5 focus:bg-white/10 focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all text-white placeholder-indigo-200/50 outline-none backdrop-blur-sm"
               />
+              <p className="text-xs text-indigo-200/70 mt-2 text-center">
+                Please enter the mobile number with Whatsapp and UPI payment setup
+              </p>
             </div>
             <button
               type="submit"
