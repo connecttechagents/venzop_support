@@ -185,11 +185,16 @@ export default function ChatScreen() {
             <Text style={[styles.backButtonText, { fontSize: 22, fontWeight: 'bold' }]}>←</Text>
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
               {customerPhone ? (
                 <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}`)}>
-                  <Text style={{ fontSize: 13, color: '#2563eb', fontWeight: 'bold', textDecorationLine: 'underline' }}>{customerPhone} (WhatsApp)</Text>
+                  <Text style={{ fontSize: 13, color: '#2563eb', fontWeight: 'bold', textDecorationLine: 'underline' }}>WhatsApp</Text>
+                </TouchableOpacity>
+              ) : null}
+              {(ticket as any).customerEmail ? (
+                <TouchableOpacity onPress={() => Linking.openURL(`mailto:${(ticket as any).customerEmail}?subject=Venzop Support Ticket #${ticket.ticketNumber || ticketId?.slice(0, 8)}`)}>
+                  <Text style={{ fontSize: 13, color: '#9333ea', fontWeight: 'bold', textDecorationLine: 'underline' }}>Email</Text>
                 </TouchableOpacity>
               ) : null}
             </View>
