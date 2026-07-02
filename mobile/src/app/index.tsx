@@ -368,10 +368,10 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   cardNew: {
-    backgroundColor: '#fef2f2',
+    backgroundColor: '#fee2e2',
   },
   cardWorking: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#dbeafe',
   },
   cardPending: {
     backgroundColor: '#fefce8',
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff7ed',
   },
   cardClosed: {
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#e2e8f0',
   },
   cardHeader: {
     flexDirection: 'row',
