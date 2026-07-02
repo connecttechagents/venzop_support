@@ -153,28 +153,28 @@ export default function TicketDashboard() {
   });
 
   const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'OPEN': return styles.statusOpen;
-      case 'IN_PROGRESS': return styles.statusProgress;
+    switch(status) {
+      case 'NEW': return styles.statusNew;
+      case 'WORKING': return styles.statusWorking;
       case 'PENDING_CUSTOMER': return styles.statusPending;
       case 'REOPENED': return styles.statusReopened;
       case 'CLOSED':
       case 'INVALID':
         return styles.statusClosed;
-      default: return styles.statusOpen;
+      default: return styles.statusNew;
     }
   };
 
   const getCardStyle = (status: string) => {
-    switch (status) {
-      case 'OPEN': return styles.cardOpen;
-      case 'IN_PROGRESS': return styles.cardProgress;
+    switch(status) {
+      case 'NEW': return styles.cardNew;
+      case 'WORKING': return styles.cardWorking;
       case 'PENDING_CUSTOMER': return styles.cardPending;
       case 'REOPENED': return styles.cardReopened;
       case 'CLOSED':
       case 'INVALID':
         return styles.cardClosed;
-      default: return styles.cardOpen;
+      default: return styles.cardNew;
     }
   };
 
@@ -250,8 +250,9 @@ export default function TicketDashboard() {
                     onValueChange={(itemValue) => setStatusFilter(itemValue)}
                     style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
                   >
-                    {['All', 'OPEN', 'IN_PROGRESS', 'PENDING_CUSTOMER', 'CLOSED'].map(s => (
-                      <Picker.Item key={s} label={s} value={s} />
+                    <Picker.Item label="All Status" value="All" />
+                    {['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED'].map(s => (
+                      <Picker.Item key={s} label={s.replace('_', ' ')} value={s} />
                     ))}
                   </Picker>
                 </View>
@@ -366,10 +367,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ef4444',
     marginLeft: 8,
   },
-  cardOpen: {
-    backgroundColor: '#f0fdf4',
+  cardNew: {
+    backgroundColor: '#fef2f2',
   },
-  cardProgress: {
+  cardWorking: {
     backgroundColor: '#eff6ff',
   },
   cardPending: {
@@ -402,10 +403,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 12,
   },
-  statusOpen: {
-    backgroundColor: '#dcfce7',
+  statusNew: {
+    backgroundColor: '#fecaca',
   },
-  statusProgress: {
+  statusWorking: {
     backgroundColor: '#dbeafe',
   },
   statusPending: {

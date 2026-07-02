@@ -13,7 +13,7 @@ interface QuickReply {
   issueTypes: string[];
 }
 
-const ALL_STATUSES = ['OPEN', 'IN_PROGRESS', 'PENDING_CUSTOMER', 'CLOSED', 'INVALID'];
+const ALL_STATUSES = ['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED', 'INVALID'];
 const ALL_ISSUE_TYPES = ['Payment', 'Hardware', 'General'];
 
 export default function AdminQuickReplies() {

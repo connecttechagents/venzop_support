@@ -11,6 +11,7 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
   const [activeTickets, setActiveTickets] = useState<any[]>([]);
   const [customerId, setCustomerId] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [emailAddress, setEmailAddress] = useState('');
   const [issueType, setIssueType] = useState('Payment');
   const [subIssueType, setSubIssueType] = useState('Amount deducted but item not dispensed');
   const [loading, setLoading] = useState(false);
@@ -92,6 +93,7 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
         const usersRef = collection(db, 'users');
         const newUserRef = await addDoc(usersRef, {
           mobileNumber,
+          email: emailAddress,
           role: 'CUSTOMER',
           createdAt: serverTimestamp()
         });
@@ -118,8 +120,9 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
         transaction.set(newTicketRef, {
           machineId: unwrappedParams.id,
           customerId: finalCustomerId,
-          status: 'OPEN',
+          status: 'NEW',
           issueType,
+          customerEmail: emailAddress,
           subIssueType,
           location: machineLocation,
           machineName: machineName,
@@ -201,6 +204,21 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
               <p className="text-sm font-medium text-yellow-400 mt-2 text-center drop-shadow-md">
                 Please enter the mobile number with <u><b>WhatsApp</b></u> and <u><b>UPI</b></u> payment setup
               </p>
+            </div>
+            
+            <div className="space-y-1.5 pt-2">
+              <label htmlFor="email" className="block text-sm font-semibold text-indigo-100 ml-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                required
+                value={emailAddress}
+                onChange={(e) => setEmailAddress(e.target.value)}
+                placeholder="e.g. you@example.com"
+                className="w-full px-5 py-4 rounded-xl border border-white/10 bg-white/5 focus:bg-white/10 focus:ring-2 focus:ring-indigo-400 focus:border-transparent transition-all text-white placeholder-indigo-200/50 outline-none backdrop-blur-sm"
+              />
             </div>
             <button
               type="submit"

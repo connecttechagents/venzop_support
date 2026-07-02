@@ -70,9 +70,9 @@ export default function ChatScreen() {
   }, [ticketId]);
 
   useEffect(() => {
-    if (ticket.status === 'OPEN') {
+    if (ticket.status === 'NEW') {
       updateDoc(doc(db, 'tickets', ticketId), {
-        status: 'IN_PROGRESS',
+        status: 'WORKING',
         agentId: agentId
       }).catch(console.error);
     }
@@ -182,21 +182,35 @@ export default function ChatScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
-            <Text style={styles.backButtonText}>← Back</Text>
+            <Text style={[styles.backButtonText, { fontSize: 22, fontWeight: 'bold' }]}>←</Text>
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
               <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
-              {customerPhone ? <Text style={{ fontSize: 13, color: '#3b82f6', fontWeight: 'bold' }}>{customerPhone}</Text> : null}
+              {customerPhone ? (
+                <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}`)}>
+                  <Text style={{ fontSize: 13, color: '#2563eb', fontWeight: 'bold', textDecorationLine: 'underline' }}>{customerPhone} (WhatsApp)</Text>
+                </TouchableOpacity>
+              ) : null}
             </View>
-            <Text style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
-              {`${ticket.machineId || ''}-${(ticket as any).machineName || 'Unknown'}-${(ticket as any).location || 'Unknown Location'}`}
-            </Text>
+            <View style={{ marginTop: 2 }}>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: '#1e293b' }}>
+                {ticket.issueType} - {ticket.subIssueType}
+              </Text>
+              <Text style={{ fontSize: 11, color: '#64748b' }}>
+                {`${ticket.machineId || ''} • ${(ticket as any).machineName || 'Unknown'} • ${(ticket as any).location || 'Unknown Location'}`}
+              </Text>
+            </View>
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {ticket.agentId !== agentId && (
               <TouchableOpacity onPress={handleAssignTicket} style={styles.actionButton}>
                 <Text style={styles.actionButtonText}>Assign</Text>
+              </TouchableOpacity>
+            )}
+            {ticket.status !== 'CLOSED' && (
+              <TouchableOpacity onPress={() => handleUpdateStatus('CLOSED')} style={[styles.actionButton, { backgroundColor: '#ef4444', marginRight: 4 }]}>
+                <Text style={[styles.actionButtonText, { color: 'white' }]}>Close</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity onPress={() => setShowStatusPicker(!showStatusPicker)} style={[styles.actionButton, styles.statusChangeButton]}>
@@ -207,7 +221,7 @@ export default function ChatScreen() {
 
         {showStatusPicker && (
           <View style={styles.statusDropdown}>
-            {['OPEN', 'IN_PROGRESS', 'PENDING_CUSTOMER', 'CLOSED', 'INVALID'].map(s => (
+            {['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED', 'INVALID'].map(s => (
               <TouchableOpacity key={s} onPress={() => handleUpdateStatus(s)} style={styles.statusOption}>
                 <Text style={[styles.statusOptionText, ticket.status === s && styles.statusOptionActive]}>{s}</Text>
               </TouchableOpacity>
@@ -235,7 +249,7 @@ export default function ChatScreen() {
                     const matchesQuery = qr.trigger.toLowerCase().includes(queryText) || qr.category.toLowerCase().includes(queryText);
                     if (!matchesQuery) return false;
                     
-                    const ticketStatus = ticket.status || 'OPEN';
+                    const ticketStatus = ticket.status || 'NEW';
                     const ticketIssue = (ticket as any).issueType || 'General';
                     
                     const qrStatuses = qr.statuses || ['ALL'];

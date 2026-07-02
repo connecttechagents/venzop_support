@@ -101,7 +101,7 @@ app.post('/api/tickets', async (req, res) => {
       data: {
         machineId,
         customerId: user.id,
-        status: 'OPEN'
+        status: 'NEW'
       }
     });
 
