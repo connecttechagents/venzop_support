@@ -191,19 +191,14 @@ export default function ChatScreen() {
             />
           </TouchableOpacity>
           <View style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            borderWidth: 1.5,
-            borderColor: '#c7df23',
-            paddingHorizontal: 8,
-            paddingVertical: 2,
-            borderRadius: 8,
-            backgroundColor: 'rgba(2, 6, 23, 0.4)',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
             marginRight: 12,
+            marginTop: -4,
           }}>
-            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>V</Text>
-            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>en</Text>
-            <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 16 }}>zop</Text>
+            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
+            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
+            <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
           </View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -213,14 +208,20 @@ export default function ChatScreen() {
                 return (
                   <>
                     {customerPhone ? (
-                      <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(defaultMsg)}`)}>
-                        <Text style={{ fontSize: 13, color: '#2563eb', fontWeight: 'bold', textDecorationLine: 'underline' }}>WhatsApp</Text>
-                      </TouchableOpacity>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(defaultMsg)}`)}>
+                          <SymbolView name={{ ios: 'message.circle.fill', android: 'chat', web: 'chat' }} size={20} tintColor="#25D366" fallback={<Text style={{fontSize: 16}}>💬</Text>} />
+                        </TouchableOpacity>
+                        <Text style={{ fontSize: 13, color: '#f8fafc', fontWeight: '500' }}>{customerPhone}</Text>
+                      </View>
                     ) : null}
                     {(ticket as any).customerEmail ? (
-                      <TouchableOpacity onPress={() => Linking.openURL(`mailto:${(ticket as any).customerEmail}?subject=Venzop Support Ticket #${ticket.ticketNumber || ticketId?.slice(0, 8)}&body=${encodeURIComponent(defaultMsg)}`)}>
-                        <Text style={{ fontSize: 13, color: '#9333ea', fontWeight: 'bold', textDecorationLine: 'underline' }}>Email</Text>
-                      </TouchableOpacity>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <TouchableOpacity onPress={() => Linking.openURL(`mailto:${(ticket as any).customerEmail}?subject=Venzop Support Ticket #${ticket.ticketNumber || ticketId?.slice(0, 8)}&body=${encodeURIComponent(defaultMsg)}`)}>
+                          <SymbolView name={{ ios: 'envelope.fill', android: 'mail', web: 'mail' }} size={20} tintColor="#9333ea" fallback={<Text style={{fontSize: 16}}>📧</Text>} />
+                        </TouchableOpacity>
+                        <Text style={{ fontSize: 13, color: '#f8fafc', fontWeight: '500' }}>{(ticket as any).customerEmail}</Text>
+                      </View>
                     ) : null}
                   </>
                 );

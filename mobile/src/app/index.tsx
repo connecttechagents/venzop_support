@@ -211,19 +211,14 @@ export default function TicketDashboard() {
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderWidth: 1.5,
-              borderColor: '#c7df23',
-              paddingHorizontal: 8,
-              paddingVertical: 2,
-              borderRadius: 8,
-              backgroundColor: 'rgba(2, 6, 23, 0.4)',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
               marginRight: 12,
+              marginTop: -4,
             }}>
-              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>V</Text>
-              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>en</Text>
-              <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 16 }}>zop</Text>
+              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
+              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
+              <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
             </View>
             <Text style={styles.headerTitle}>Venzop Agent</Text>
             {!notificationsEnabled && (
