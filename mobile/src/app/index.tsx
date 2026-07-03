@@ -330,7 +330,6 @@ export default function TicketDashboard() {
             </View>
           </View>
         )}
-      </View>
       {errorMsg ? (
         <Text style={{color: 'red', padding: 20}}>Error loading tickets: {errorMsg}</Text>
       ) : loading ? (
@@ -344,6 +343,7 @@ export default function TicketDashboard() {
           ListEmptyComponent={<Text style={styles.emptyText}>No active tickets.</Text>}
         />
       )}
+      </View>
     </SafeAreaView>
   );
 }
