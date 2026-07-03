@@ -45,7 +45,7 @@ export default function TicketDashboard() {
       if (permission === 'granted') {
         const messaging = getMessaging();
         const token = await getToken(messaging, {
-          vapidKey: process.env.EXPO_PUBLIC_VAPID_KEY || 'C1NA2g1NnOiV0HEnvZjM-OC2AIaQveQuoJnzLQQlMs4'
+          vapidKey: process.env.EXPO_PUBLIC_VAPID_KEY || 'BPamwgenEOHlJ-zASpfkCZpK_Qe6zXewFLFDW4MCz_uQ744V-fkHmXl8mDFmAfT1Lt4-S0CL-6C-cCIgYRYboJs'
         });
         if (token) {
           // Save to firestore
