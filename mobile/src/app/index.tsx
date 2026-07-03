@@ -231,6 +231,14 @@ export default function TicketDashboard() {
                 <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>Enable Notifications</Text>
               </TouchableOpacity>
             )}
+            <View style={{flexDirection: 'row', marginLeft: 16, gap: 8}}>
+              <TouchableOpacity onPress={() => router.push('/admin/qrcodes')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
+                <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>QR Codes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/admin/quick-replies')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
+                <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>Quick Replies</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <TouchableOpacity onPress={() => setShowFilters(!showFilters)} style={styles.filterToggle}>
             <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
