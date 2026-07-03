@@ -245,6 +245,7 @@ export default function TicketDashboard() {
           <TouchableOpacity onPress={() => setShowFilters(!showFilters)} style={styles.filterToggle}>
             <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
           </TouchableOpacity>
+          </View>
         </BlurView>
 
         {showFilters && (
