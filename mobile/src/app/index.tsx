@@ -210,6 +210,21 @@ export default function TicketDashboard() {
       <View style={styles.header}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1.5,
+              borderColor: '#c7df23',
+              paddingHorizontal: 8,
+              paddingVertical: 2,
+              borderRadius: 8,
+              backgroundColor: 'rgba(2, 6, 23, 0.4)',
+              marginRight: 12,
+            }}>
+              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>V</Text>
+              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>en</Text>
+              <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 16 }}>zop</Text>
+            </View>
             <Text style={styles.headerTitle}>Venzop Agent</Text>
             {!notificationsEnabled && (
               <TouchableOpacity onPress={enableNotifications} style={{marginLeft: 12, backgroundColor: '#3b82f6', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
@@ -329,16 +344,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
   },
   header: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#0f172a',
     padding: 20,
     paddingTop: 60,
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: '#1e293b',
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#0f172a',
+    color: '#ffffff',
   },
   listContent: {
     padding: 16,
@@ -444,23 +459,21 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   filterToggleText: {
-    fontSize: 14,
-    color: '#334155',
+    color: '#3b82f6',
     fontWeight: '600',
   },
   filtersContainer: {
     marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#f1f5f9',
-    paddingTop: 12,
+    backgroundColor: '#1e293b',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#334155',
   },
   filterLabel: {
     fontSize: 12,
-    fontWeight: '700',
-    color: '#94a3b8',
-    marginBottom: 8,
-    marginTop: 8,
-    textTransform: 'uppercase',
+    fontWeight: '600',
+    color: '#cbd5e1',
+    marginBottom: 4,
   },
   filterRow: {
     flexDirection: 'row',

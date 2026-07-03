@@ -186,10 +186,25 @@ export default function ChatScreen() {
             <SymbolView 
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
               size={32} 
-              tintColor="#2563eb"
-              fallback={<Text style={[styles.backButtonText, { fontSize: 32, fontWeight: '900', color: '#2563eb' }]}>←</Text>}
+              tintColor="#c7df23"
+              fallback={<Text style={[styles.backButtonText, { fontSize: 32, fontWeight: '900', color: '#c7df23' }]}>←</Text>}
             />
           </TouchableOpacity>
+          <View style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderWidth: 1.5,
+            borderColor: '#c7df23',
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+            borderRadius: 8,
+            backgroundColor: 'rgba(2, 6, 23, 0.4)',
+            marginRight: 12,
+          }}>
+            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>V</Text>
+            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 16 }}>en</Text>
+            <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 16 }}>zop</Text>
+          </View>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
@@ -212,10 +227,10 @@ export default function ChatScreen() {
               })()}
             </View>
             <View style={{ marginTop: 2 }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: '#1e293b' }}>
+              <Text style={{ fontSize: 13, fontWeight: '800', color: '#f8fafc' }}>
                 {ticket.issueType} - {ticket.subIssueType}
               </Text>
-              <Text style={{ fontSize: 11, color: '#64748b' }}>
+              <Text style={{ fontSize: 11, color: '#94a3b8' }}>
                 {`${ticket.machineId || ''} • ${(ticket as any).machineName || 'Unknown'} • ${(ticket as any).location || 'Unknown Location'}`}
               </Text>
             </View>
@@ -331,7 +346,7 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#0f172a',
   },
   container: {
     flex: 1,
@@ -341,9 +356,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#0f172a',
     borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    borderBottomColor: '#1e293b',
   },
   backButton: {
     marginRight: 16,
@@ -356,7 +371,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#0f172a',
+    color: '#ffffff',
   },
   messageList: {
     padding: 16,
