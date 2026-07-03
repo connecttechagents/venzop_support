@@ -345,7 +345,6 @@ export default function TicketDashboard() {
           ListEmptyComponent={<Text style={styles.emptyText}>No active tickets.</Text>}
         />
       )}
-      </View>
     </SafeAreaView>
   );
 }
