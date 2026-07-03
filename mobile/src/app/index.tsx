@@ -45,7 +45,7 @@ export default function TicketDashboard() {
       if (permission === 'granted') {
         const messaging = getMessaging();
         const token = await getToken(messaging, {
-          vapidKey: process.env.EXPO_PUBLIC_VAPID_KEY
+          vapidKey: process.env.EXPO_PUBLIC_VAPID_KEY || 'C1NA2g1NnOiV0HEnvZjM-OC2AIaQveQuoJnzLQQlMs4'
         });
         if (token) {
           // Save to firestore
@@ -61,9 +61,9 @@ export default function TicketDashboard() {
       } else {
         alert('Notification permission denied.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Error enabling notifications.');
+      alert('Error enabling notifications: ' + (error?.message || error));
     }
   };
 
