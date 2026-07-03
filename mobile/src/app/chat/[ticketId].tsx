@@ -187,16 +187,23 @@ export default function ChatScreen() {
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
-              {customerPhone ? (
-                <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}`)}>
-                  <Text style={{ fontSize: 13, color: '#2563eb', fontWeight: 'bold', textDecorationLine: 'underline' }}>WhatsApp</Text>
-                </TouchableOpacity>
-              ) : null}
-              {(ticket as any).customerEmail ? (
-                <TouchableOpacity onPress={() => Linking.openURL(`mailto:${(ticket as any).customerEmail}?subject=Venzop Support Ticket #${ticket.ticketNumber || ticketId?.slice(0, 8)}`)}>
-                  <Text style={{ fontSize: 13, color: '#9333ea', fontWeight: 'bold', textDecorationLine: 'underline' }}>Email</Text>
-                </TouchableOpacity>
-              ) : null}
+              {(() => {
+                const defaultMsg = `Dear customer, your ticket number is ${ticket.ticketNumber || ticketId?.slice(0, 8)} with status ${ticket.status || 'NEW'}. following is the link to continue conversation in ticket: www.support.venzop.com/machine/${ticket.machineId || 'MX'}`;
+                return (
+                  <>
+                    {customerPhone ? (
+                      <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(defaultMsg)}`)}>
+                        <Text style={{ fontSize: 13, color: '#2563eb', fontWeight: 'bold', textDecorationLine: 'underline' }}>WhatsApp</Text>
+                      </TouchableOpacity>
+                    ) : null}
+                    {(ticket as any).customerEmail ? (
+                      <TouchableOpacity onPress={() => Linking.openURL(`mailto:${(ticket as any).customerEmail}?subject=Venzop Support Ticket #${ticket.ticketNumber || ticketId?.slice(0, 8)}&body=${encodeURIComponent(defaultMsg)}`)}>
+                        <Text style={{ fontSize: 13, color: '#9333ea', fontWeight: 'bold', textDecorationLine: 'underline' }}>Email</Text>
+                      </TouchableOpacity>
+                    ) : null}
+                  </>
+                );
+              })()}
             </View>
             <View style={{ marginTop: 2 }}>
               <Text style={{ fontSize: 13, fontWeight: '800', color: '#1e293b' }}>
