@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView, Image, ActivityIndicator, Linking, ScrollView } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage } from '../../lib/firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc } from 'firebase/firestore';
@@ -182,7 +183,12 @@ export default function ChatScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
-            <Text style={[styles.backButtonText, { fontSize: 22, fontWeight: 'bold' }]}>←</Text>
+            <SymbolView 
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
+              size={32} 
+              tintColor="#2563eb"
+              fallback={<Text style={[styles.backButtonText, { fontSize: 32, fontWeight: '900', color: '#2563eb' }]}>←</Text>}
+            />
           </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
