@@ -194,7 +194,7 @@ export default function ChatScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
               {(() => {
-                const defaultMsg = `Dear customer, your ticket number is ${ticket.ticketNumber || ticketId?.slice(0, 8)} with status ${ticket.status || 'NEW'}. following is the link to continue conversation in ticket: www.support.venzop.com/machine/${ticket.machineId || 'MX'}`;
+                const defaultMsg = `Dear customer, your ticket number is ${ticket.ticketNumber || ticketId?.slice(0, 8)} with status ${ticket.status || 'NEW'}. following is the link to continue conversation in ticket: https://support.venzop.com/chat/${ticketId}`;
                 return (
                   <>
                     {customerPhone ? (
