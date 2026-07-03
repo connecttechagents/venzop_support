@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Audio } from 'expo-av';
 import { Picker } from '@react-native-picker/picker';
@@ -206,10 +206,11 @@ export default function TicketDashboard() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <View style={{
               flexDirection: 'column',
               alignItems: 'flex-start',
@@ -342,19 +343,25 @@ export default function TicketDashboard() {
           ListEmptyComponent={<Text style={styles.emptyText}>No active tickets.</Text>}
         />
       )}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+  },
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
     backgroundColor: '#0f172a',
-    padding: 20,
-    paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#1e293b',
   },

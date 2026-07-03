@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platform, ActivityIndicator, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { db } from '../../lib/firebase';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
+import { SymbolView } from 'expo-symbols';
 
 interface QuickReply {
   id: string;
@@ -105,11 +106,16 @@ export default function AdminQuickReplies() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => router.push('/')} style={{marginRight: 16}}>
-            <Text style={{color: '#c7df23', fontSize: 24, fontWeight: 'bold'}}>←</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
+            <SymbolView 
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
+              size={32} 
+              tintColor="#c7df23"
+              fallback={<Text style={{ fontSize: 32, fontWeight: '900', color: '#c7df23' }}>←</Text>}
+            />
           </TouchableOpacity>
           <View style={{
             flexDirection: 'column',
@@ -128,7 +134,6 @@ export default function AdminQuickReplies() {
           </View>
           <Text style={styles.headerTitle}>Quick Replies Admin</Text>
         </View>
-      </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.grid}>
@@ -279,21 +284,30 @@ export default function AdminQuickReplies() {
           </View>
         </View>
       </ScrollView>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+  },
   container: {
     flex: 1,
     backgroundColor: '#0f172a',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
     backgroundColor: '#0f172a',
-    padding: 20,
-    paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#1e293b',
+  },
+  backButton: {
+    marginRight: 16,
   },
   headerTitle: {
     fontSize: 24,

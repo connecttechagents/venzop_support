@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platform, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import QRCode from 'react-native-qrcode-svg';
+import { SymbolView } from 'expo-symbols';
 
 const MACHINES = [
   { id: 'M1', location: 'Airport Terminal 1, Gate C', name: 'Vending Machine A' },
@@ -76,11 +77,16 @@ export default function AdminQRCodes() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => router.push('/')} style={{marginRight: 16}}>
-            <Text style={{color: '#c7df23', fontSize: 24, fontWeight: 'bold'}}>←</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
+            <SymbolView 
+              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
+              size={32} 
+              tintColor="#c7df23"
+              fallback={<Text style={{ fontSize: 32, fontWeight: '900', color: '#c7df23' }}>←</Text>}
+            />
           </TouchableOpacity>
           <View style={{
             flexDirection: 'column',
@@ -99,7 +105,6 @@ export default function AdminQRCodes() {
           </View>
           <Text style={styles.headerTitle}>QR Codes Admin</Text>
         </View>
-      </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.description}>Print these QR codes and place them on your vending machines. Customers can scan them to immediately open a support ticket for that specific location.</Text>
@@ -150,21 +155,30 @@ export default function AdminQRCodes() {
           ))}
         </View>
       </ScrollView>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#0f172a',
+  },
   container: {
     flex: 1,
     backgroundColor: '#f8fafc',
   },
   header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
     backgroundColor: '#0f172a',
-    padding: 20,
-    paddingTop: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#1e293b',
+  },
+  backButton: {
+    marginRight: 16,
   },
   headerTitle: {
     fontSize: 24,
