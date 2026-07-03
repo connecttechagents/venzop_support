@@ -363,9 +363,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#1e293b',
     borderBottomWidth: 1,
-    borderBottomColor: '#1e293b',
+    borderBottomColor: '#334155',
   },
   backButton: {
     marginRight: 16,
