@@ -5,7 +5,6 @@ import { db } from '../../lib/firebase';
 import { collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Picker } from '@react-native-picker/picker';
 import { SymbolView } from 'expo-symbols';
-import { BlurView } from 'expo-blur';
 
 interface QuickReply {
   id: string;
@@ -109,7 +108,7 @@ export default function AdminQuickReplies() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <BlurView intensity={60} tint="dark" style={styles.header}>
+        <View style={styles.header}>
           <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
             <SymbolView 
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
@@ -134,7 +133,7 @@ export default function AdminQuickReplies() {
             <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
           </View>
           <Text style={styles.headerTitle}>Quick Replies Admin</Text>
-        </BlurView>
+        </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.grid}>
@@ -303,8 +302,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#1e293b',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: '#334155',
   },
   backButton: {
     marginRight: 16,

@@ -3,7 +3,6 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, 
 import { useRouter } from 'expo-router';
 import { Audio } from 'expo-av';
 import { Picker } from '@react-native-picker/picker';
-import { BlurView } from 'expo-blur';
 import { db } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore';
 import { getMessaging, getToken, isSupported } from 'firebase/messaging';
@@ -209,7 +208,7 @@ export default function TicketDashboard() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <BlurView intensity={60} tint="dark" style={styles.header}>
+        <View style={styles.header}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <View style={{
@@ -246,7 +245,7 @@ export default function TicketDashboard() {
             <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
           </TouchableOpacity>
           </View>
-        </BlurView>
+        </View>
 
         {showFilters && (
           <View style={[styles.filtersContainer, { padding: 10, gap: 10 }]}>
@@ -362,8 +361,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#1e293b',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: '#334155',
   },
   headerTitle: {
     fontSize: 24,

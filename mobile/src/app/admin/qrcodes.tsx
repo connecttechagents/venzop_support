@@ -5,7 +5,6 @@ import { db } from '../../lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import QRCode from 'react-native-qrcode-svg';
 import { SymbolView } from 'expo-symbols';
-import { BlurView } from 'expo-blur';
 
 const MACHINES = [
   { id: 'M1', location: 'Airport Terminal 1, Gate C', name: 'Vending Machine A' },
@@ -80,7 +79,7 @@ export default function AdminQRCodes() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <BlurView intensity={60} tint="dark" style={styles.header}>
+        <View style={styles.header}>
           <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
             <SymbolView 
               name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
@@ -105,7 +104,7 @@ export default function AdminQRCodes() {
             <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
           </View>
           <Text style={styles.headerTitle}>QR Codes Admin</Text>
-        </BlurView>
+        </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.description}>Print these QR codes and place them on your vending machines. Customers can scan them to immediately open a support ticket for that specific location.</Text>
@@ -174,8 +173,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#1e293b',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.1)',
+    borderBottomColor: '#334155',
   },
   backButton: {
     marginRight: 16,
