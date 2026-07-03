@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, Keyboard
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import * as ImagePicker from 'expo-image-picker';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { db, storage } from '../../lib/firebase';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -215,7 +216,7 @@ export default function ChatScreen() {
                     {customerPhone ? (
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                         <TouchableOpacity onPress={() => Linking.openURL(`https://wa.me/${customerPhone.replace(/\D/g, '')}?text=${encodeURIComponent(defaultMsg)}`)}>
-                          <SymbolView name={{ ios: 'message.circle.fill', android: 'chat', web: 'chat' }} size={20} tintColor="#25D366" fallback={<Text style={{fontSize: 16}}>💬</Text>} />
+                          <FontAwesome name="whatsapp" size={20} color="#25D366" />
                         </TouchableOpacity>
                         <Text style={{ fontSize: 13, color: '#f8fafc', fontWeight: '500' }}>{customerPhone}</Text>
                       </View>
