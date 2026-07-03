@@ -194,7 +194,12 @@ export default function ChatScreen() {
             flexDirection: 'column',
             alignItems: 'flex-start',
             marginRight: 12,
-            marginTop: -4,
+            borderWidth: 1.5,
+            borderColor: '#c7df23',
+            paddingHorizontal: 8,
+            paddingVertical: 4,
+            borderRadius: 12,
+            backgroundColor: 'rgba(2, 6, 23, 0.6)',
           }}>
             <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
             <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
