@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { Audio } from 'expo-av';
@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import { db } from '../lib/firebase';
 import { collection, query, orderBy, onSnapshot, doc, setDoc, getDocs } from 'firebase/firestore';
 import { getMessaging, getToken, isSupported } from 'firebase/messaging';
+import { AlarmContext } from '../context/AlarmContext';
 
 interface Ticket {
   id: string;
@@ -33,9 +34,8 @@ export default function TicketDashboard() {
 
   const agentId = 'current_agent_id'; // Mock agent ID for now
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  const [alarmActive, setAlarmActive] = useState(false);
-  const [alarmTickets, setAlarmTickets] = useState<string[]>([]);
-  const soundRef = useRef<Audio.Sound | null>(null);
+
+  const { triggerAlarm } = useContext(AlarmContext);
 
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
@@ -136,35 +136,7 @@ export default function TicketDashboard() {
         });
 
         if (shouldBeep) {
-          setAlarmTickets(newTicketIds);
-          setAlarmActive(true);
-          try {
-            if (soundRef.current) {
-              await soundRef.current.unloadAsync();
-            }
-            const { sound } = await Audio.Sound.createAsync(
-               require('../../assets/message_alert.mp3')
-            );
-            soundRef.current = sound;
-            
-            let loopCount = 0;
-            sound.setOnPlaybackStatusUpdate((status) => {
-               if (status.isLoaded && status.didJustFinish) {
-                 loopCount++;
-                 if (loopCount < 2) {
-                   sound.replayAsync();
-                 } else {
-                   sound.stopAsync();
-                   setAlarmActive(false);
-                 }
-               }
-            });
-            
-            await sound.setVolumeAsync(1.0);
-            await sound.playAsync();
-          } catch (e: any) {
-            console.error("Error playing sound. This is usually due to browser autoplay policies requiring a user click first.", e);
-          }
+          triggerAlarm(newTicketIds);
         }
       } else {
         isInitialLoad.current = false;
@@ -177,9 +149,6 @@ export default function TicketDashboard() {
 
     return () => {
       unsubscribe();
-      if (soundRef.current) {
-        soundRef.current.unloadAsync();
-      }
     };
   }, []);
 
@@ -253,17 +222,6 @@ export default function TicketDashboard() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {alarmActive && (
-        <View style={styles.alarmBanner}>
-          <Text style={styles.alarmText}>🔔 Incoming Message on Ticket(s): #{alarmTickets.join(', #')}</Text>
-          <TouchableOpacity onPress={async () => {
-            if (soundRef.current) await soundRef.current.stopAsync();
-            setAlarmActive(false);
-          }} style={styles.alarmButton}>
-            <Text style={styles.alarmButtonText}>Stop Alarm</Text>
-          </TouchableOpacity>
-        </View>
-      )}
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
@@ -426,39 +384,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: '#ffffff',
-  },
-  alarmBanner: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-    right: 20,
-    backgroundColor: '#ef4444',
-    padding: 16,
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    zIndex: 9999,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 10
-  },
-  alarmText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-  alarmButton: {
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8
-  },
-  alarmButtonText: {
-    color: '#ef4444',
-    fontWeight: 'bold'
   },
   listContent: {
     padding: 16,
