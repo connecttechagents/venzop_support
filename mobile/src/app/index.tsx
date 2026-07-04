@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import { Audio } from 'expo-av';
 import { Picker } from '@react-native-picker/picker';
 import { db } from '../lib/firebase';
@@ -34,7 +34,22 @@ export default function TicketDashboard() {
   const agentId = 'current_agent_id'; // Mock agent ID for now
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [alarmActive, setAlarmActive] = useState(false);
+  const [alarmTickets, setAlarmTickets] = useState<string[]>([]);
   const soundRef = useRef<Audio.Sound | null>(null);
+
+  const pathname = usePathname();
+  const pathnameRef = useRef(pathname);
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('notificationsEnabled') === 'true') {
+        setNotificationsEnabled(true);
+      }
+    }
+  }, []);
 
   const enableNotifications = async () => {
     try {
@@ -56,6 +71,9 @@ export default function TicketDashboard() {
             updatedAt: new Date()
           });
           setNotificationsEnabled(true);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('notificationsEnabled', 'true');
+          }
           alert('Notifications Enabled successfully!');
         } else {
           alert('Failed to get push token.');
@@ -96,18 +114,29 @@ export default function TicketDashboard() {
 
       if (!isInitialLoad.current) {
         let shouldBeep = false;
+        let newTicketIds: string[] = [];
+        
         snapshot.docChanges().forEach((change) => {
+          const docId = change.doc.id;
+          // Don't ring if the agent is actively chatting in this exact ticket
+          if (pathnameRef.current.includes(`/chat/${docId}`)) {
+            return;
+          }
+          
           if (change.type === 'added') {
             shouldBeep = true;
+            newTicketIds.push(change.doc.data().ticketNumber || docId.slice(0, 8));
           } else if (change.type === 'modified') {
             const data = change.doc.data();
             if (data.lastMessageBy === 'CUSTOMER') {
               shouldBeep = true;
+              newTicketIds.push(data.ticketNumber || docId.slice(0, 8));
             }
           }
         });
 
         if (shouldBeep) {
+          setAlarmTickets(newTicketIds);
           setAlarmActive(true);
           try {
             if (soundRef.current) {
@@ -117,7 +146,20 @@ export default function TicketDashboard() {
                require('../../assets/message_alert.mp3')
             );
             soundRef.current = sound;
-            await sound.setIsLoopingAsync(true);
+            
+            let loopCount = 0;
+            sound.setOnPlaybackStatusUpdate((status) => {
+               if (status.isLoaded && status.didJustFinish) {
+                 loopCount++;
+                 if (loopCount < 2) {
+                   sound.replayAsync();
+                 } else {
+                   sound.stopAsync();
+                   setAlarmActive(false);
+                 }
+               }
+            });
+            
             await sound.setVolumeAsync(1.0);
             await sound.playAsync();
           } catch (e: any) {
@@ -213,7 +255,7 @@ export default function TicketDashboard() {
     <SafeAreaView style={styles.safeArea}>
       {alarmActive && (
         <View style={styles.alarmBanner}>
-          <Text style={styles.alarmText}>🔔 Incoming Message / Ticket</Text>
+          <Text style={styles.alarmText}>🔔 Incoming Message on Ticket(s): #{alarmTickets.join(', #')}</Text>
           <TouchableOpacity onPress={async () => {
             if (soundRef.current) await soundRef.current.stopAsync();
             setAlarmActive(false);
