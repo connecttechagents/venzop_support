@@ -182,33 +182,35 @@ export default function ChatScreen() {
         style={styles.container} 
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
-            <SymbolView 
-              name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
-              size={32} 
-              tintColor="#c7df23"
-              fallback={<Text style={[styles.backButtonText, { fontSize: 32, fontWeight: '900', color: '#c7df23' }]}>←</Text>}
-            />
-          </TouchableOpacity>
-          <View style={{
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            marginRight: 12,
-            borderWidth: 1.5,
-            borderColor: '#c7df23',
-            paddingHorizontal: 8,
-            paddingVertical: 4,
-            borderRadius: 12,
-            backgroundColor: 'rgba(2, 6, 23, 0.6)',
-          }}>
-            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
-            <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
-            <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
+        <View style={[styles.header, { flexWrap: 'wrap', gap: 10 }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', minWidth: '100%', paddingBottom: 4, borderBottomWidth: 1, borderBottomColor: 'rgba(51, 65, 85, 0.5)' }}>
+            <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
+              <SymbolView 
+                name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
+                size={32} 
+                tintColor="#c7df23"
+                fallback={<Text style={[styles.backButtonText, { fontSize: 32, fontWeight: '900', color: '#c7df23' }]}>←</Text>}
+              />
+            </TouchableOpacity>
+            <View style={{
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              marginRight: 12,
+              borderWidth: 1.5,
+              borderColor: '#c7df23',
+              paddingHorizontal: 8,
+              paddingVertical: 4,
+              borderRadius: 12,
+              backgroundColor: 'rgba(2, 6, 23, 0.6)',
+            }}>
+              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
+              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
+              <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
+            </View>
+            <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, minWidth: 200 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-              <Text style={styles.headerTitle}>#{ticket.ticketNumber || ticketId?.slice(0, 8)}</Text>
               {(() => {
                 const defaultMsg = `Dear customer, your ticket number is ${ticket.ticketNumber || ticketId?.slice(0, 8)} with status ${ticket.status || 'NEW'}. following is the link to continue conversation in ticket: https://support.venzop.com/chat/${ticketId}`;
                 return (
@@ -242,14 +244,14 @@ export default function ChatScreen() {
               </Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
             {ticket.agentId !== agentId && (
               <TouchableOpacity onPress={handleAssignTicket} style={styles.actionButton}>
                 <Text style={styles.actionButtonText}>Assign</Text>
               </TouchableOpacity>
             )}
             {ticket.status !== 'CLOSED' && (
-              <TouchableOpacity onPress={() => handleUpdateStatus('CLOSED')} style={[styles.actionButton, { backgroundColor: '#ef4444', marginRight: 4 }]}>
+              <TouchableOpacity onPress={() => handleUpdateStatus('CLOSED')} style={[styles.actionButton, { backgroundColor: '#ef4444' }]}>
                 <Text style={[styles.actionButtonText, { color: 'white' }]}>Close</Text>
               </TouchableOpacity>
             )}

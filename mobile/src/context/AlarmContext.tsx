@@ -13,7 +13,11 @@ export const AlarmProvider = ({ children }: { children: React.ReactNode }) => {
     setAlarmActive(true);
     try {
       if (soundRef.current) {
-        await soundRef.current.unloadAsync();
+        try {
+          await soundRef.current.unloadAsync();
+        } catch (e) {
+          // Ignore unload errors
+        }
       }
       const { sound } = await Audio.Sound.createAsync(
          require('../../assets/message_alert.mp3')

@@ -223,42 +223,42 @@ export default function TicketDashboard() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              marginRight: 12,
-              borderWidth: 1.5,
-              borderColor: '#c7df23',
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              borderRadius: 12,
-              backgroundColor: 'rgba(2, 6, 23, 0.6)',
-            }}>
-              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
-              <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
-              <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
-            </View>
-            <Text style={styles.headerTitle}>Venzop Agent</Text>
-            {!notificationsEnabled && (
-              <TouchableOpacity onPress={enableNotifications} style={{marginLeft: 12, backgroundColor: '#3b82f6', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
-                <Text style={{color: '#fff', fontSize: 12, fontWeight: 'bold'}}>Enable Notifications</Text>
-              </TouchableOpacity>
-            )}
-            <View style={{flexDirection: 'row', marginLeft: 16, gap: 8}}>
-              <TouchableOpacity onPress={() => router.push('/admin/qrcodes')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
-                <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>QR Codes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('/admin/quick-replies')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4}}>
-                <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>Quick Replies</Text>
-              </TouchableOpacity>
+        <View style={[styles.header, { flexWrap: 'wrap', gap: 10 }]}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1, minWidth: 280}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                marginRight: 12,
+                borderWidth: 1.5,
+                borderColor: '#c7df23',
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 12,
+                backgroundColor: 'rgba(2, 6, 23, 0.6)',
+              }}>
+                <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>V</Text>
+                <Text style={{ color: '#c7df23', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>en</Text>
+                <Text style={{ color: '#238ce5', fontWeight: '900', fontSize: 18, lineHeight: 16 }}>zop</Text>
+              </View>
+              <Text style={styles.headerTitle}>Venzop Agent</Text>
             </View>
           </View>
-          <TouchableOpacity onPress={() => setShowFilters(!showFilters)} style={styles.filterToggle}>
-            <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap'}}>
+            {!notificationsEnabled && (
+              <TouchableOpacity onPress={enableNotifications} style={{backgroundColor: '#3b82f6', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
+                <Text style={{color: 'white', fontWeight: 'bold', fontSize: 12}}>Enable Notifications</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => router.push('/admin/qrcodes')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
+              <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>QR Codes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/admin/quick-replies')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
+              <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>Quick Replies</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowFilters(!showFilters)} style={styles.filterToggle}>
+              <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
