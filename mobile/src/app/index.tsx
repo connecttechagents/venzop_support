@@ -33,6 +33,8 @@ export default function TicketDashboard() {
 
   const agentId = 'current_agent_id'; // Mock agent ID for now
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [alarmActive, setAlarmActive] = useState(false);
+  const soundRef = useRef<Audio.Sound | null>(null);
 
   const enableNotifications = async () => {
     try {
@@ -107,20 +109,17 @@ export default function TicketDashboard() {
 
         if (shouldBeep) {
           try {
+            if (soundRef.current) {
+              await soundRef.current.unloadAsync();
+            }
             const { sound } = await Audio.Sound.createAsync(
-               require('../../assets/beep.wav')
+               require('../../assets/message_alert.mp3')
             );
+            soundRef.current = sound;
+            await sound.setIsLoopingAsync(true);
             await sound.setVolumeAsync(1.0);
             await sound.playAsync();
-            
-            // Double beep for attention
-            setTimeout(async () => {
-              try {
-                await sound.replayAsync();
-              } catch (err) {
-                console.error("Error on second beep", err);
-              }
-            }, 600);
+            setAlarmActive(true);
           } catch (e) {
             console.error("Error playing sound", e);
           }
@@ -134,7 +133,12 @@ export default function TicketDashboard() {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+      }
+    };
   }, []);
 
   const filteredTickets = tickets.filter(t => {
@@ -207,6 +211,17 @@ export default function TicketDashboard() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {alarmActive && (
+        <View style={styles.alarmBanner}>
+          <Text style={styles.alarmText}>🔔 Incoming Message / Ticket</Text>
+          <TouchableOpacity onPress={async () => {
+            if (soundRef.current) await soundRef.current.stopAsync();
+            setAlarmActive(false);
+          }} style={styles.alarmButton}>
+            <Text style={styles.alarmButtonText}>Stop Alarm</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flex: 1}}>
@@ -369,6 +384,39 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
     color: '#ffffff',
+  },
+  alarmBanner: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    right: 20,
+    backgroundColor: '#ef4444',
+    padding: 16,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    zIndex: 9999,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 10
+  },
+  alarmText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16
+  },
+  alarmButton: {
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8
+  },
+  alarmButtonText: {
+    color: '#ef4444',
+    fontWeight: 'bold'
   },
   listContent: {
     padding: 16,
