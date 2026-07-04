@@ -108,6 +108,7 @@ export default function TicketDashboard() {
         });
 
         if (shouldBeep) {
+          setAlarmActive(true);
           try {
             if (soundRef.current) {
               await soundRef.current.unloadAsync();
@@ -119,10 +120,8 @@ export default function TicketDashboard() {
             await sound.setIsLoopingAsync(true);
             await sound.setVolumeAsync(1.0);
             await sound.playAsync();
-            setAlarmActive(true);
           } catch (e: any) {
-            console.error("Error playing sound", e);
-            alert("Audio error: " + (e.message || e));
+            console.error("Error playing sound. This is usually due to browser autoplay policies requiring a user click first.", e);
           }
         }
       } else {
