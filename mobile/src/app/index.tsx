@@ -120,8 +120,9 @@ export default function TicketDashboard() {
             await sound.setVolumeAsync(1.0);
             await sound.playAsync();
             setAlarmActive(true);
-          } catch (e) {
+          } catch (e: any) {
             console.error("Error playing sound", e);
+            alert("Audio error: " + (e.message || e));
           }
         }
       } else {
