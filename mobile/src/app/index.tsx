@@ -255,7 +255,7 @@ export default function TicketDashboard() {
               flexWrap: 'wrap', 
               gap: 8, 
               borderWidth: 1, 
-              borderColor: '#475569', 
+              borderColor: '#c7df23', 
               borderRadius: 8, 
               padding: 8, 
               paddingTop: 12,
@@ -268,7 +268,7 @@ export default function TicketDashboard() {
                 left: 12,
                 backgroundColor: '#1e293b',
                 paddingHorizontal: 4,
-                color: '#cbd5e1',
+                color: '#c7df23',
                 fontSize: 12,
                 fontWeight: 'bold'
               }}>Status</Text>
@@ -335,7 +335,7 @@ export default function TicketDashboard() {
               flexWrap: 'wrap', 
               gap: 8, 
               borderWidth: 1, 
-              borderColor: '#475569', 
+              borderColor: '#c7df23', 
               borderRadius: 8, 
               padding: 8, 
               paddingTop: 12,
@@ -348,7 +348,7 @@ export default function TicketDashboard() {
                 left: 12,
                 backgroundColor: '#1e293b',
                 paddingHorizontal: 4,
-                color: '#cbd5e1',
+                color: '#c7df23',
                 fontSize: 12,
                 fontWeight: 'bold'
               }}>Admin</Text>
