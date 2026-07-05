@@ -24,7 +24,7 @@ export default function TicketDashboard() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState<string[]>(['NEW', 'WORKING']);
   const [issueFilter, setIssueFilter] = useState('All');
   const [assignFilter, setAssignFilter] = useState('All');
   const [machineFilter, setMachineFilter] = useState('All');
@@ -153,7 +153,7 @@ export default function TicketDashboard() {
   }, []);
 
   const filteredTickets = tickets.filter(t => {
-    if (statusFilter !== 'All' && t.status !== statusFilter) return false;
+    if (statusFilter.length > 0 && !statusFilter.includes(t.status)) return false;
     if (issueFilter !== 'All' && (t as any).issueType !== issueFilter) return false;
     if (assignFilter === 'Me' && (t as any).agentId !== agentId) return false;
     if (assignFilter === 'Unassigned' && (t as any).agentId) return false;
@@ -282,19 +282,59 @@ export default function TicketDashboard() {
                 </View>
               </View>
 
-              <View style={{ flex: 1, minWidth: 140 }}>
+              <View style={{ flex: 2, minWidth: 280 }}>
                 <Text style={styles.filterLabel}>Status:</Text>
-                <View style={{ borderWidth: 1, borderColor: '#e2e8f0', borderRadius: 8, overflow: 'hidden', backgroundColor: '#f8fafc' }}>
-                  <Picker
-                    selectedValue={statusFilter}
-                    onValueChange={(itemValue) => setStatusFilter(itemValue)}
-                    style={{ height: 40, border: 'none', backgroundColor: 'transparent' }}
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                  {['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED'].map(s => {
+                    const isSelected = statusFilter.includes(s);
+                    return (
+                      <TouchableOpacity 
+                        key={s} 
+                        style={{
+                          paddingHorizontal: 12,
+                          paddingVertical: 6,
+                          borderRadius: 16,
+                          backgroundColor: isSelected ? '#3b82f6' : '#e2e8f0',
+                          borderWidth: 1,
+                          borderColor: isSelected ? '#2563eb' : '#cbd5e1'
+                        }}
+                        onPress={() => {
+                          setStatusFilter(prev => 
+                            prev.includes(s) 
+                              ? prev.filter(item => item !== s)
+                              : [...prev, s]
+                          );
+                        }}
+                      >
+                        <Text style={{
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          color: isSelected ? '#ffffff' : '#475569'
+                        }}>
+                          {s.replace('_', ' ')}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                  <TouchableOpacity 
+                    style={{
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 16,
+                      backgroundColor: statusFilter.length === 0 ? '#3b82f6' : '#e2e8f0',
+                      borderWidth: 1,
+                      borderColor: statusFilter.length === 0 ? '#2563eb' : '#cbd5e1'
+                    }}
+                    onPress={() => setStatusFilter([])}
                   >
-                    <Picker.Item label="All Status" value="All" />
-                    {['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED'].map(s => (
-                      <Picker.Item key={s} label={s.replace('_', ' ')} value={s} />
-                    ))}
-                  </Picker>
+                    <Text style={{
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      color: statusFilter.length === 0 ? '#ffffff' : '#475569'
+                    }}>
+                      ALL
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
 

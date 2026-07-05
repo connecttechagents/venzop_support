@@ -183,7 +183,7 @@ export default function ChatScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <View style={[styles.header, { flexWrap: 'wrap', gap: 10 }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', minWidth: '100%', paddingBottom: 4, borderBottomWidth: 1, borderBottomColor: 'rgba(51, 65, 85, 0.5)' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity onPress={() => router.push('/')} style={styles.backButton}>
               <SymbolView 
                 name={{ ios: 'chevron.left', android: 'arrow_back', web: 'arrow_back' }} 
