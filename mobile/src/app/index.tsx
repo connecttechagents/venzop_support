@@ -249,7 +249,7 @@ export default function TicketDashboard() {
               <Text style={styles.headerTitle}>Venzop Agent</Text>
             </View>
           </View>
-          <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap', alignItems: 'center'}}>
+          <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap', alignItems: 'center', flex: 1, minWidth: 300, maxWidth: '100%'}}>
             <View style={{
               flexDirection: 'row', 
               flexWrap: 'wrap', 
@@ -260,7 +260,8 @@ export default function TicketDashboard() {
               padding: 8, 
               paddingTop: 12,
               marginTop: 4,
-              position: 'relative'
+              position: 'relative',
+              maxWidth: '100%'
             }}>
               <Text style={{
                 position: 'absolute',
@@ -340,7 +341,8 @@ export default function TicketDashboard() {
               padding: 8, 
               paddingTop: 12,
               marginTop: 4,
-              position: 'relative'
+              position: 'relative',
+              maxWidth: '100%'
             }}>
               <Text style={{
                 position: 'absolute',
