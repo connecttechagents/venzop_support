@@ -103,6 +103,7 @@ export default function TicketDashboard() {
     fetchMachines();
 
     const q = query(collection(db, 'tickets'), orderBy('createdAt', 'desc'));
+    let isInitialSnapshot = true;
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       const fetchedTickets: Ticket[] = [];
       snapshot.forEach((doc) => {
@@ -112,22 +113,26 @@ export default function TicketDashboard() {
       setLoading(false);
       setErrorMsg(null);
 
-      if (!isInitialLoad.current) {
+      if (!isInitialSnapshot && !snapshot.metadata.fromCache) {
         let shouldBeep = false;
         let newTicketIds: string[] = [];
         
         snapshot.docChanges().forEach((change) => {
           const docId = change.doc.id;
-          // Don't ring if the agent is actively chatting in this exact ticket
-          if (pathnameRef.current.includes(`/chat/${docId}`)) {
-            return;
-          }
+          if (pathnameRef.current.includes(`/chat/${docId}`)) return;
           
+          const data = change.doc.data();
+          
+          // Enforce 60-second recency check to prevent old tickets from ringing
+          const timestamp = (data.lastMessageAt || data.createdAt)?.toMillis?.() || 0;
+          const isRecent = (Date.now() - timestamp) < 60000;
+          
+          if (!isRecent) return;
+
           if (change.type === 'added') {
             shouldBeep = true;
-            newTicketIds.push(change.doc.data().ticketNumber || docId.slice(0, 8));
+            newTicketIds.push(data.ticketNumber || docId.slice(0, 8));
           } else if (change.type === 'modified') {
-            const data = change.doc.data();
             if (data.lastMessageBy === 'CUSTOMER') {
               shouldBeep = true;
               newTicketIds.push(data.ticketNumber || docId.slice(0, 8));
@@ -135,11 +140,11 @@ export default function TicketDashboard() {
           }
         });
 
-        if (shouldBeep) {
+        if (shouldBeep && newTicketIds.length > 0) {
           triggerAlarm(newTicketIds);
         }
       } else {
-        isInitialLoad.current = false;
+        isInitialSnapshot = false;
       }
     }, (error) => {
       console.error(error);
