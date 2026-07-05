@@ -249,7 +249,82 @@ export default function TicketDashboard() {
               <Text style={styles.headerTitle}>Venzop Agent</Text>
             </View>
           </View>
-          <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap'}}>
+          <View style={{flexDirection: 'row', gap: 8, flexWrap: 'wrap', alignItems: 'center'}}>
+            <View style={{
+              flexDirection: 'row', 
+              flexWrap: 'wrap', 
+              gap: 8, 
+              borderWidth: 1, 
+              borderColor: '#475569', 
+              borderRadius: 8, 
+              padding: 8, 
+              paddingTop: 12,
+              marginTop: 4,
+              position: 'relative'
+            }}>
+              <Text style={{
+                position: 'absolute',
+                top: -10,
+                left: 12,
+                backgroundColor: '#1e293b',
+                paddingHorizontal: 4,
+                color: '#cbd5e1',
+                fontSize: 12,
+                fontWeight: 'bold'
+              }}>Status</Text>
+              
+              {['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED'].map(s => {
+                const isSelected = statusFilter.includes(s);
+                return (
+                  <TouchableOpacity 
+                    key={s} 
+                    style={{
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
+                      borderRadius: 16,
+                      backgroundColor: isSelected ? '#3b82f6' : 'transparent',
+                      borderWidth: 1,
+                      borderColor: isSelected ? '#3b82f6' : '#475569'
+                    }}
+                    onPress={() => {
+                      setStatusFilter(prev => 
+                        prev.includes(s) 
+                          ? prev.filter(item => item !== s)
+                          : [...prev, s]
+                      );
+                    }}
+                  >
+                    <Text style={{
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      color: isSelected ? '#ffffff' : '#94a3b8'
+                    }}>
+                      {s.replace('_', ' ')}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+              <TouchableOpacity 
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  borderRadius: 16,
+                  backgroundColor: statusFilter.length === 0 ? '#3b82f6' : 'transparent',
+                  borderWidth: 1,
+                  borderColor: statusFilter.length === 0 ? '#3b82f6' : '#475569'
+                }}
+                onPress={() => setStatusFilter([])}
+              >
+                <Text style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: statusFilter.length === 0 ? '#ffffff' : '#94a3b8'
+                }}>
+                  ALL
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
             {!notificationsEnabled && (
               <TouchableOpacity onPress={enableNotifications} style={{backgroundColor: '#3b82f6', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
                 <Text style={{color: 'white', fontWeight: 'bold', fontSize: 12}}>Enable Notifications</Text>
@@ -287,61 +362,7 @@ export default function TicketDashboard() {
                 </View>
               </View>
 
-              <View style={{ flex: 2, minWidth: 280 }}>
-                <Text style={styles.filterLabel}>Status:</Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-                  {['NEW', 'WORKING', 'PENDING_CUSTOMER', 'CLOSED'].map(s => {
-                    const isSelected = statusFilter.includes(s);
-                    return (
-                      <TouchableOpacity 
-                        key={s} 
-                        style={{
-                          paddingHorizontal: 12,
-                          paddingVertical: 6,
-                          borderRadius: 16,
-                          backgroundColor: isSelected ? '#3b82f6' : '#e2e8f0',
-                          borderWidth: 1,
-                          borderColor: isSelected ? '#2563eb' : '#cbd5e1'
-                        }}
-                        onPress={() => {
-                          setStatusFilter(prev => 
-                            prev.includes(s) 
-                              ? prev.filter(item => item !== s)
-                              : [...prev, s]
-                          );
-                        }}
-                      >
-                        <Text style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: isSelected ? '#ffffff' : '#475569'
-                        }}>
-                          {s.replace('_', ' ')}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                  <TouchableOpacity 
-                    style={{
-                      paddingHorizontal: 12,
-                      paddingVertical: 6,
-                      borderRadius: 16,
-                      backgroundColor: statusFilter.length === 0 ? '#3b82f6' : '#e2e8f0',
-                      borderWidth: 1,
-                      borderColor: statusFilter.length === 0 ? '#2563eb' : '#cbd5e1'
-                    }}
-                    onPress={() => setStatusFilter([])}
-                  >
-                    <Text style={{
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      color: statusFilter.length === 0 ? '#ffffff' : '#475569'
-                    }}>
-                      ALL
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+
 
               <View style={{ flex: 1, minWidth: 140 }}>
                 <Text style={styles.filterLabel}>Issue Type:</Text>
