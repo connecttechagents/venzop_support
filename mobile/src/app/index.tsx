@@ -330,12 +330,35 @@ export default function TicketDashboard() {
                 <Text style={{color: 'white', fontWeight: 'bold', fontSize: 12}}>Enable Notifications</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity onPress={() => router.push('/admin/qrcodes')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
-              <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>QR Codes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push('/admin/quick-replies')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
-              <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>Quick Replies</Text>
-            </TouchableOpacity>
+            <View style={{
+              flexDirection: 'row', 
+              flexWrap: 'wrap', 
+              gap: 8, 
+              borderWidth: 1, 
+              borderColor: '#475569', 
+              borderRadius: 8, 
+              padding: 8, 
+              paddingTop: 12,
+              marginTop: 4,
+              position: 'relative'
+            }}>
+              <Text style={{
+                position: 'absolute',
+                top: -10,
+                left: 12,
+                backgroundColor: '#1e293b',
+                paddingHorizontal: 4,
+                color: '#cbd5e1',
+                fontSize: 12,
+                fontWeight: 'bold'
+              }}>Admin</Text>
+              <TouchableOpacity onPress={() => router.push('/admin/qrcodes')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
+                <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>QR Codes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => router.push('/admin/quick-replies')} style={{backgroundColor: '#1e293b', borderWidth: 1, borderColor: '#334155', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 4}}>
+                <Text style={{color: '#cbd5e1', fontSize: 12, fontWeight: 'bold'}}>Quick Replies</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity onPress={() => setShowFilters(!showFilters)} style={styles.filterToggle}>
               <Text style={styles.filterToggleText}>{showFilters ? 'Hide Filters' : 'Filters ▾'}</Text>
             </TouchableOpacity>
