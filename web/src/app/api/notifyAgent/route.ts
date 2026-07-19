@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     
     if (telegramBotToken && telegramChatId) {
       try {
-        const text = `🚨 *${title}*\n\n${body}\n\n[Open Dashboard](${url || 'https://agent.venzop.com'})`;
+        const text = `🚨 *${title}*\n\n${body}\n\n[Open Venzop Agent](${url || 'https://agent.venzop.com'})`;
         await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
           method: 'POST',
           headers: {
