@@ -44,6 +44,29 @@ export async function POST(req: NextRequest) {
 
     const response = await adminMessaging.sendEachForMulticast(message);
     
+    // Telegram Notification
+    const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+    const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+    
+    if (telegramBotToken && telegramChatId) {
+      try {
+        const text = `🚨 *${title}*\n\n${body}\n\n[Open Dashboard](${url || 'https://agent.venzop.com'})`;
+        await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: telegramChatId,
+            text,
+            parse_mode: 'Markdown',
+          }),
+        });
+      } catch (telegramError) {
+        console.error('Failed to send Telegram notification:', telegramError);
+      }
+    }
+    
     return NextResponse.json({ 
       success: true, 
       successCount: response.successCount,
