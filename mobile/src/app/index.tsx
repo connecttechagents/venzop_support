@@ -167,8 +167,8 @@ export default function TicketDashboard() {
   });
 
   const sortedTickets = [...filteredTickets].sort((a, b) => {
-    const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-    const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+    const timeA = (a as any).lastMessageAt?.toMillis ? (a as any).lastMessageAt.toMillis() : (a.createdAt?.toMillis ? a.createdAt.toMillis() : 0);
+    const timeB = (b as any).lastMessageAt?.toMillis ? (b as any).lastMessageAt.toMillis() : (b.createdAt?.toMillis ? b.createdAt.toMillis() : 0);
     return sortOrder === 'desc' ? timeB - timeA : timeA - timeB;
   });
 
@@ -220,7 +220,12 @@ export default function TicketDashboard() {
           </View>
         </View>
         <Text style={styles.ticketId}>Ticket #{(item as any).ticketNumber || item.id.slice(0, 8)}</Text>
-        <Text style={styles.time}>{item.createdAt?.toDate ? item.createdAt.toDate().toLocaleString() : 'Just now'}</Text>
+        <Text style={styles.time}>
+          {(() => {
+            const timeField = (item as any).lastMessageAt || item.createdAt;
+            return timeField?.toDate ? timeField.toDate().toLocaleString([], {month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : 'Just now';
+          })()}
+        </Text>
       </TouchableOpacity>
     );
   };

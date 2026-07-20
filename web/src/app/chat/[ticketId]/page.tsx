@@ -241,7 +241,7 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
                   
                   <div className={`text-[10px] mt-1.5 opacity-60 flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                     {msg.createdAt ? (
-                      msg.createdAt.toDate ? msg.createdAt.toDate().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+                      msg.createdAt.toDate ? msg.createdAt.toDate().toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : new Date(msg.createdAt).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})
                     ) : ''}
                   </div>
                 </div>

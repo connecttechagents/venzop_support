@@ -175,7 +175,7 @@ export default function ChatScreen() {
         <View style={{ flexDirection: 'row', justifyContent: isMe ? 'flex-end' : 'flex-start', marginTop: 4, opacity: 0.6 }}>
           <Text style={{ fontSize: 10, color: isMe ? '#ffffff' : '#94a3b8' }}>
             {item.createdAt ? (
-              (item.createdAt as any).toDate ? (item.createdAt as any).toDate().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : new Date(item.createdAt).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+              (item.createdAt as any).toDate ? (item.createdAt as any).toDate().toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'}) : new Date(item.createdAt).toLocaleString([], {month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'})
             ) : ''}
           </Text>
         </View>
