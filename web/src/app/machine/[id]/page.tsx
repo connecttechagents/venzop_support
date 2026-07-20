@@ -146,7 +146,7 @@ export default function MachineLanding({ params }: { params: Promise<{ id: strin
         body: JSON.stringify({
           title: `New Ticket #${newTicketNumber}`,
           body: `${machineName || unwrappedParams.id}: ${issueType} - ${subIssueType}`,
-          url: `https://agent.venzop.com` // Opening the app will redirect to the tickets list
+          url: `https://agent.venzop.com/chat/${newTicketRef.id}`
         })
       }).catch(console.error);
 

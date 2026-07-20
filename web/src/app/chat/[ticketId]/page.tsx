@@ -93,7 +93,7 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
         body: JSON.stringify({
           title: `New Message on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
           body: messageText.length > 50 ? messageText.substring(0, 50) + '...' : messageText,
-          url: `https://agent.venzop.com`
+          url: `https://agent.venzop.com/chat/${unwrappedParams.ticketId}`
         })
       }).catch(console.error);
     } catch (e) {
@@ -148,7 +148,7 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
           body: JSON.stringify({
             title: `New Image on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
             body: 'Customer uploaded an image',
-            url: `https://agent.venzop.com`
+            url: `https://agent.venzop.com/chat/${unwrappedParams.ticketId}`
           })
         }).catch(console.error);
 
