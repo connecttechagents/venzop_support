@@ -172,6 +172,13 @@ export default function ChatScreen() {
           </TouchableOpacity>
         ) : null}
         {item.text ? <Text style={[styles.messageText, isMe ? styles.myMessageText : null]}>{item.text}</Text> : null}
+        <View style={{ flexDirection: 'row', justifyContent: isMe ? 'flex-end' : 'flex-start', marginTop: 4, opacity: 0.6 }}>
+          <Text style={{ fontSize: 10, color: isMe ? '#ffffff' : '#94a3b8' }}>
+            {item.createdAt ? (
+              (item.createdAt as any).toDate ? (item.createdAt as any).toDate().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : new Date(item.createdAt).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+            ) : ''}
+          </Text>
+        </View>
       </View>
     );
   };

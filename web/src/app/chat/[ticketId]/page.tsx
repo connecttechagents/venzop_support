@@ -13,7 +13,7 @@ interface Message {
     role: string;
     name?: string;
   };
-  createdAt: string;
+  createdAt: any;
   imageUrl?: string;
 }
 
@@ -221,7 +221,7 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
                 className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] md:max-w-[75%] rounded-3xl px-5 py-4 shadow-xl ${
+                  className={`max-w-[85%] md:max-w-[75%] rounded-3xl px-5 py-4 shadow-xl flex flex-col ${
                     isMe
                       ? 'bg-gradient-to-br from-indigo-600 to-fuchsia-600 text-white rounded-tr-sm shadow-indigo-500/20'
                       : isBot
@@ -238,6 +238,12 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
                     <img src={msg.imageUrl} alt="Attachment" className="max-w-full rounded-lg mb-2 shadow-sm" />
                   )}
                   {msg.text && <p className="whitespace-pre-wrap text-sm leading-relaxed">{msg.text}</p>}
+                  
+                  <div className={`text-[10px] mt-1.5 opacity-60 flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                    {msg.createdAt ? (
+                      msg.createdAt.toDate ? msg.createdAt.toDate().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}) : new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+                    ) : ''}
+                  </div>
                 </div>
               </div>
             );
