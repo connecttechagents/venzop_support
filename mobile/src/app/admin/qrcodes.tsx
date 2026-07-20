@@ -6,49 +6,34 @@ import { doc, setDoc, getDoc } from 'firebase/firestore';
 import QRCode from 'react-native-qrcode-svg';
 import { SymbolView } from 'expo-symbols';
 
-const MACHINES = [
-  { id: 'M1', location: 'Airport Terminal 1, Gate C', name: 'Vending Machine A' },
-  { id: 'M2', location: 'Mall of America, Level 2', name: 'Vending Machine B' },
-  { id: 'M3', location: 'Central Train Station', name: 'Vending Machine C' }
-];
-
 export default function AdminQRCodes() {
   const router = useRouter();
   const [newId, setNewId] = useState('');
   const [newName, setNewName] = useState('');
   const [newLocation, setNewLocation] = useState('');
-  const [machines, setMachines] = useState(MACHINES);
-  const [seeding, setSeeding] = useState(false);
-  const [seeded, setSeeded] = useState(false);
+  const [machines, setMachines] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchMachines = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'machines'));
+        const mList: any[] = [];
+        querySnapshot.forEach((docSnap) => {
+          mList.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        setMachines(mList);
+      } catch (e) {
+        console.error("Error fetching machines", e);
+      }
+    };
+    fetchMachines();
+  }, []);
 
   const getBaseUrl = () => {
     if (Platform.OS === 'web' && typeof window !== 'undefined') {
       return window.location.origin.replace('agent', 'support');
     }
     return 'https://support.venzop.com';
-  };
-
-  const handleSeedDatabase = async () => {
-    setSeeding(true);
-    try {
-      for (const machine of machines) {
-        await setDoc(doc(db, 'machines', machine.id), {
-          location: machine.location,
-          name: machine.name
-        });
-      }
-      const counterRef = doc(db, 'counters', 'tickets');
-      const counterSnap = await getDoc(counterRef);
-      if (!counterSnap.exists()) {
-        await setDoc(counterRef, { currentId: 1000 });
-      }
-      setSeeded(true);
-    } catch (e) {
-      console.error(e);
-      alert('Failed to seed database');
-    } finally {
-      setSeeding(false);
-    }
   };
 
   const handleAddMachine = async () => {
@@ -109,20 +94,6 @@ export default function AdminQRCodes() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.description}>Print these QR codes and place them on your vending machines. Customers can scan them to immediately open a support ticket for that specific location.</Text>
         
-        <View style={styles.card}>
-          <View style={{flex: 1, marginRight: 16}}>
-            <Text style={styles.cardTitle}>Database Setup</Text>
-            <Text style={styles.cardSubtitle}>Seed the Firestore database with the machines below and initialize the ticket sequence counter.</Text>
-          </View>
-          <TouchableOpacity 
-            onPress={handleSeedDatabase} 
-            disabled={seeding || seeded}
-            style={[styles.button, seeded ? {backgroundColor: '#22c55e'} : {}]}
-          >
-            <Text style={styles.buttonText}>{seeded ? 'Seeded ✓' : seeding ? 'Seeding...' : 'Seed Database'}</Text>
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Add Custom Machine</Text>
           <View style={styles.formRow}>
