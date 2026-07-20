@@ -42,16 +42,17 @@ export async function POST(req: NextRequest) {
       tokens,
     };
 
-    const response = await adminMessaging.sendEachForMulticast(message);
-    
-    // Telegram Notification
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
     const telegramChatId = process.env.TELEGRAM_CHAT_ID;
     
+    const tasks: Promise<any>[] = [
+      adminMessaging.sendEachForMulticast(message)
+    ];
+
     if (telegramBotToken && telegramChatId) {
-      try {
-        const text = `🚨 *${title}*\n\n${body}\n\n[Open Venzop Agent](${url || 'https://agent.venzop.com'})`;
-        await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+      const text = `🚨 *${title}*\n\n${body}\n\n[Open Venzop Agent](${url || 'https://agent.venzop.com'})`;
+      tasks.push(
+        fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -61,16 +62,17 @@ export async function POST(req: NextRequest) {
             text,
             parse_mode: 'Markdown',
           }),
-        });
-      } catch (telegramError) {
-        console.error('Failed to send Telegram notification:', telegramError);
-      }
+        }).catch((err) => console.error('Telegram error:', err))
+      );
     }
+    
+    const results = await Promise.allSettled(tasks);
+    const fcmResult = results[0].status === 'fulfilled' ? results[0].value : { successCount: 0, failureCount: 0 };
     
     return NextResponse.json({ 
       success: true, 
-      successCount: response.successCount,
-      failureCount: response.failureCount
+      successCount: fcmResult.successCount || 0,
+      failureCount: fcmResult.failureCount || 0
     });
   } catch (error: any) {
     console.error('Error sending push notification:', error);

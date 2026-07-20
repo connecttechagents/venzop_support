@@ -72,6 +72,17 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
     setNewMessage('');
 
     try {
+      // Fire notification in the background without awaiting Firestore
+      fetch('/api/notifyAgent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `New Message on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
+          body: messageText.length > 50 ? messageText.substring(0, 50) + '...' : messageText,
+          url: `https://agent.venzop.com/chat/${unwrappedParams.ticketId}`
+        })
+      }).catch(console.error);
+
       if (ticket.status === 'CLOSED' || ticket.status === 'INVALID') {
         await updateDoc(doc(db, 'tickets', unwrappedParams.ticketId), { 
           status: 'REOPENED',
@@ -92,16 +103,6 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
         createdAt: serverTimestamp()
       });
 
-      // Notify agents
-      fetch('/api/notifyAgent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: `New Message on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
-          body: messageText.length > 50 ? messageText.substring(0, 50) + '...' : messageText,
-          url: `https://agent.venzop.com/chat/${unwrappedParams.ticketId}`
-        })
-      }).catch(console.error);
     } catch (e) {
       console.error(e);
       alert('Failed to send message.');
@@ -125,6 +126,17 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
       }, 
       async () => {
         const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+        // Fire notification in the background without awaiting Firestore
+        fetch('/api/notifyAgent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: `New Image on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
+            body: 'Customer uploaded an image',
+            url: `https://agent.venzop.com/chat/${unwrappedParams.ticketId}`
+          })
+        }).catch(console.error);
         
         if (ticket.status === 'CLOSED' || ticket.status === 'INVALID') {
           await updateDoc(doc(db, 'tickets', unwrappedParams.ticketId), { 
@@ -146,17 +158,6 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
           sender: { role: 'CUSTOMER' },
           createdAt: serverTimestamp()
         });
-
-        // Notify agents
-        fetch('/api/notifyAgent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            title: `New Image on Ticket #${ticket.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`,
-            body: 'Customer uploaded an image',
-            url: `https://agent.venzop.com/chat/${unwrappedParams.ticketId}`
-          })
-        }).catch(console.error);
 
         setIsUploading(false);
         if (fileInputRef.current) fileInputRef.current.value = '';
