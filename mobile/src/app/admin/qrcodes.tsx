@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, Platform, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { db } from '../../lib/firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, getDocs } from 'firebase/firestore';
 import QRCode from 'react-native-qrcode-svg';
 import { SymbolView } from 'expo-symbols';
 
