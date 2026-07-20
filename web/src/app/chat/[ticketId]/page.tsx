@@ -32,7 +32,13 @@ export default function ChatPage({ params }: { params: Promise<{ ticketId: strin
   useEffect(() => {
     const ticketRef = doc(db, 'tickets', unwrappedParams.ticketId);
     const unsubscribeTicket = onSnapshot(ticketRef, (docSnap) => {
-      if (docSnap.exists()) setTicket(docSnap.data() as {status?: string});
+      if (docSnap.exists()) {
+        const data = docSnap.data() as any;
+        setTicket(data);
+        if (typeof document !== 'undefined') {
+          document.title = `Venzop Support #${data.ticketNumber || unwrappedParams.ticketId.slice(0, 8)}`;
+        }
+      }
     });
 
     const messagesRef = collection(db, `tickets/${unwrappedParams.ticketId}/messages`);
